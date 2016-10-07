@@ -1,0 +1,16 @@
+/* styles for Recipe content type */
+body.node-type-recipe div.field-name-field-image{
+    float:left;
+}
+
+body.node-type-recipe div.time-yield-wrapper{
+    float:left;
+    margin-left: 20px;
+    border: 1px solid #777;
+    padding: 10px;
+}
+
+body.node-type-recipe div.field-name-field-ingredients{
+    clear:left;
+}
+

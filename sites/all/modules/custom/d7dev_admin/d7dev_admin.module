@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * d7dev Admin module.
+ */
+
+
+/**
+ * Implements hook_block_info()
+ *
+ * Define all blocks provided by the module
+ */
+function d7dev_admin_block_info() {
+    // define an associative array for each block
+    $blocks['add_recipe_content'] = array(
+        'info' => t('Add Recipe Content'),
+        'cache' => DRUPAL_CACHE_GLOBAL,
+    );
+
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view()
+ *
+ * Return a rendered or renderable view of a block.
+ */
+function d7dev_admin_block_view($delta = '') {
+
+    // $delta: what block to render as defined in hook_block_info.
+    switch ($delta) {
+        case 'add_recipe_content':
+            $block['subject'] = null;
+            $block['content'] = d7dev_admin_contents($delta);
+            break;
+    }
+
+    return $block;
+
+}
+
+/**
+ * Function that generates the content for d7dev_admin blocks
+ */
+function d7dev_admin_contents($delta = '') {
+    switch ($delta) {
+        case 'add_recipe_content':
+            $add_recipe_link = array(
+                '#theme' => 'link',
+                '#text' => t('Add Recipe'),
+                '#path' => 'node/add/recipe',
+                '#options' => array(
+                    'attributes' => array(),
+                    'html' => false,
+                ),
+            );
+            return $add_recipe_link;
+    }
+}
+
+/**
+* Implementation of hook_wysiwyg_editor_settings_alter().
+*/
+function d7dev_admin_wysiwyg_editor_settings_alter(&$settings, &$context) {
+    if($context['profile']->editor == 'ckeditor') {
+        $settings['forcePasteAsPlainText'] = TRUE;
+    }
+}

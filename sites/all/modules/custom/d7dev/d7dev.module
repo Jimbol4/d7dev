@@ -1,0 +1,58 @@
+<?php
+
+//simple helper function to get gcd of minutes
+function gcd($a, $b) {
+  $b = ( $a == 0 )? 0 : $b;
+  return ( $a % $b )? gcd($b, abs($a - $b)) : $b;
+}
+
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function d7dev_field_formatter_info() {
+  return array(
+    'd7dev_integer_duration' => array(
+      'label' => t('Duration'),
+      'field types' => array('number_integer'),
+    )
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function d7dev_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  $settings = $display['settings'];
+
+  switch ($display['type']) {
+    case 'd7dev_integer_duration':
+      foreach ($items as $delta => $item) {
+
+        $hours = floor($item['value'] / 60);
+
+        $minutes = $item['value'] % 60;
+
+        if ($minutes) {
+          $minutes_gcd = gcd($minutes, 60);
+
+          $minutes_fraction = '<sup>' . $minutes/$minutes_gcd . '</sup>&frasl;<sub>'
+          . 60 / $minutes_gcd . '</sub>';
+        } else {
+          $minutes_fraction = null;
+        }
+
+        if ($minutes_fraction == null) {
+          $markup = $hours . ' hours';
+        } else {
+          $markup = $hours > 0 ? $hours . ' and ' . $minutes_fraction . ' hours' : $minutes_fraction . ' hours';
+        }
+
+        $element[$delta] = array('#markup' => $markup);
+      }
+      break;
+  }
+
+  return $element;
+}
